@@ -4,10 +4,11 @@ import java.awt.Color;
 public class Pacman extends Actor {
 	
 	private int mouthAngle = 0;
-	private int mouthIncrement = 2;
+	private int mouthIncrement = 10;
+	private int maxMouthAngle = 40;
 	
 	Pacman(int x, int y){  // Everything based off centre
-		super(x, y, 0.05);
+		super(x, y, 0.24);
 	}
 	
 
@@ -24,15 +25,15 @@ public class Pacman extends Actor {
 	
 	public void drawActor(Graphics2D g2, double blockSize) {
 		g2.setColor(this.color);
-		g2.fillArc((int) ((0.1*blockSize)+(this.centre.X()-0.5)*blockSize), (int) ((0.1*blockSize)+(this.centre.Y()-0.5)*blockSize), (int) (0.8*blockSize), (int) (0.8*blockSize), this.angleDirection+mouthAngle, 360-2*mouthAngle);
+		g2.fillArc((int) ((this.size*blockSize)+(this.centre.X()-0.5)*blockSize), (int) ((this.size*blockSize)+(this.centre.Y()-0.5)*blockSize), (int) ((1-2*this.size)*blockSize), (int) ((1-2*this.size)*blockSize), this.angleDirection+mouthAngle, 360-2*mouthAngle);
 	}
 	
 	public void updateMouthAngle() {
 		if (mouthAngle <=0) {
-			mouthIncrement = 5;
+			mouthIncrement = 10;
 		}
-		else if (mouthAngle >= 40) {
-			mouthIncrement = -5;
+		else if (mouthAngle >= maxMouthAngle) {
+			mouthIncrement = -10;
 		}
 		mouthAngle += mouthIncrement;
 	}

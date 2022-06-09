@@ -16,20 +16,20 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 
 	private int mapWidth =0;
 	private int mapHeight =0;
-	private char[][] charMap;
+	private char[][] map;
 	private Graphics2D g2;
 	private double blockWidth;
 	private double blockHeight;
 	private double blockSize;
 	private Timer paintTimer = new Timer(10,this);						
-	private Timer mouthTimer = new Timer(10,this);
-	private Timer moveTimer = new Timer(10,this);												
+	private Timer mouthTimer = new Timer(40,this);
+	private Timer moveTimer = new Timer(40,this);												
 	private double startX;
 	private double startY;
 	private int pacStartX;
 	private int pacStartY;
 	private Color Cbackground = new Color(25, 25, 166);
-	private char[] moveableArray = new char[4];
+	private char[] moveableArray = new char[5];
 	Pacman pac;
 
 	
@@ -44,6 +44,8 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 		moveableArray[1] = 'e';
 		moveableArray[2] = 'g';
 		moveableArray[3] = 'c';
+		moveableArray[4] = 'i';
+
 	}
 
 	
@@ -52,19 +54,19 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		if (key == KeyEvent.VK_LEFT) {
-			pac.setAngleDirection(Actor.getWEST());
+			pac.setAngleNextDirection(Actor.getWEST());
 		}
 
 	    if (key == KeyEvent.VK_RIGHT) {
-			pac.setAngleDirection(Actor.getEAST());
+			pac.setAngleNextDirection(Actor.getEAST());
 	    }
 
 	    if (key == KeyEvent.VK_UP) {
-			pac.setAngleDirection(Actor.getNORTH());
+			pac.setAngleNextDirection(Actor.getNORTH());
 	    }
 
 	    if (key == KeyEvent.VK_DOWN) {
-			pac.setAngleDirection(Actor.getSOUTH());
+			pac.setAngleNextDirection(Actor.getSOUTH());
 	    }	}
 
 	@Override
@@ -84,43 +86,43 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 			g2.fillRect((int) startX, (int) startY, (int) blockSize, (int) blockSize);
 			g2.setColor(Cbackground);
 			if (x != 0 && y!=0 && x!= mapWidth-1 && y!= mapHeight-1) {
-				if (charMap[y][x-1] != 'a') {
+				if (map[y][x-1] != 'a') {
 					g2.drawLine((int) startX, (int) startY, (int) startX, (int) (startY+blockSize));
 				}
 				
-				if (charMap[y][x+1] != 'a') {
+				if (map[y][x+1] != 'a') {
 					g2.drawLine((int) (startX+blockSize-1), (int) startY, (int) (startX+blockSize-1), (int) (startY+blockSize));
 				}
 				
-				if (charMap[y-1][x] != 'a') {
+				if (map[y-1][x] != 'a') {
 					g2.drawLine((int) startX, (int) startY, (int) (startX+blockSize), (int) (startY));
 				}
 				
-				if (charMap[y+1][x] != 'a') {
+				if (map[y+1][x] != 'a') {
 					g2.drawLine((int) startX, (int) (startY+blockSize-1), (int) (startX+blockSize), (int) (startY+blockSize-1));
 				}
 			}
 			
 			if (x == 0) {
-				if (charMap[y][1] !='a') {
+				if (map[y][1] !='a') {
 					g2.drawLine((int) (startX+blockSize-1), (int) (startY), (int) (startX+blockSize-1), (int) (startY+blockSize));
 				}
 			}
 			
 			if (x == mapWidth-1) {
-				if (charMap[y][(int) (mapWidth-2)] !='a') {
+				if (map[y][(int) (mapWidth-2)] !='a') {
 					g2.drawLine((int) (startX+1), (int) (startY), (int) (startX+1), (int) (startY+blockSize));
 				}
 			}
 			
 			if (y == mapHeight-1) {
-				if (charMap[y-1][x] !='a') {
+				if (map[y-1][x] !='a') {
 					g2.drawLine((int) (startX), (int) (startY+1), (int) (startX+blockSize), (int) (startY+1));
 				}
 			}
 			
 			if (y == 0) {
-				if (charMap[1][x] !='a') {
+				if (map[1][x] !='a') {
 					g2.drawLine((int) startX, (int) (startY-1+blockSize), (int) (startX+blockSize), (int) (startY-1+blockSize));
 				}
 			}
@@ -179,7 +181,7 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 		char tile;
 		for (int y=0; y<mapHeight; y++) {
 			for (int x=0; x<mapWidth; x++) {
-				tile = charMap[y][x];
+				tile = map[y][x];
 				startX = x * blockSize;
 				startY = y * blockSize;
 				g2.setColor(Color.green);
@@ -232,16 +234,16 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 			}
 			
 			System.out.println("Map Width: " + mapWidth + ", Map Height: " + mapHeight);
-			charMap = new char[mapHeight][mapWidth];
+			map = new char[mapHeight][mapWidth];
 			
 			reader = new BufferedReader( new FileReader(filename));
 			line = reader.readLine();
 			for (int i=0; i<mapHeight; i++) {
-				charMap[i] = line.toCharArray();
+				map[i] = line.toCharArray();
 				line = reader.readLine();
 			}
 			
-			for (char[] readLine: charMap) {
+			for (char[] readLine: map) {
 				System.out.println(readLine);
 			}
 			
@@ -260,7 +262,7 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 		// Location finders (pac start, ghost bay etc)
 		for (int y=0; y<mapHeight; y++) {
 			for (int x=0; x<mapWidth; x++) {
-				if (charMap[y][x] == 'g'){
+				if (map[y][x] == 'g'){
 					pacStartX = x;
 					pacStartY = y;
 				}
@@ -278,7 +280,8 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 			pac.updateMouthAngle();
 		}
 		if (e.getSource() == moveTimer) {
-			pac.move(charMap);
+			pac.move(map);
+			pac.dotReplacement(map);
 		}
 	}
 	

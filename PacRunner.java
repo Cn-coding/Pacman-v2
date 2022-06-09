@@ -5,7 +5,6 @@ public class PacRunner extends JFrame {
 	public static void main(String[] args) {
 		
 		Map map = new Map("Map.txt");
-//		map.loadMap("Map.txt");
 		
 		JFrame window = new JFrame();
 		window.setContentPane(map);
